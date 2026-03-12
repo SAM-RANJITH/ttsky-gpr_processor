@@ -30,7 +30,7 @@ module tb ();
   always #5 clk = ~clk;
 
   // DUT
-  tt_um_ttsky_gpr_processor user_project ( (
+  tt_um_gpr_processor  user_project (
 
 `ifdef GL_TEST
       .VPWR(VPWR),
