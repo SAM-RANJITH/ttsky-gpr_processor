@@ -1,11 +1,6 @@
 `default_nettype none
 `timescale 1ns / 1ps
 
-/* 
- This testbench only instantiates the module and exposes signals
- so they can be driven by cocotb (test.py).
-*/
-
 module tb ();
 
   // Dump signals for waveform viewing
