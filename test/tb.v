@@ -3,19 +3,18 @@
 
 module tb ();
 
-  // Dump signals for waveform viewing
+  // Dump waveform
   initial begin
     $dumpfile("tb.fst");
     $dumpvars(0, tb);
-    #1;
   end
 
   // Inputs
-  reg clk;
-  reg rst_n;
-  reg ena;
-  reg [7:0] ui_in;
-  reg [7:0] uio_in;
+  reg clk = 0;
+  reg rst_n = 0;
+  reg ena = 1;
+  reg [7:0] ui_in = 0;
+  reg [7:0] uio_in = 0;
 
   // Outputs
   wire [7:0] uo_out;
@@ -27,7 +26,10 @@ module tb ();
   wire VGND = 1'b0;
 `endif
 
-  // DUT instantiation
+  // Clock generation
+  always #5 clk = ~clk;
+
+  // DUT
   tt_um_gpr_processor user_project (
 
 `ifdef GL_TEST
@@ -35,14 +37,37 @@ module tb ();
       .VGND(VGND),
 `endif
 
-      .ui_in  (ui_in),     // Dedicated inputs
-      .uo_out (uo_out),    // Dedicated outputs
-      .uio_in (uio_in),    // IO inputs
-      .uio_out(uio_out),   // IO outputs
-      .uio_oe (uio_oe),    // IO direction
-      .ena    (ena),       // enable
-      .clk    (clk),       // clock
-      .rst_n  (rst_n)      // reset
+      .ui_in  (ui_in),
+      .uo_out (uo_out),
+      .uio_in (uio_in),
+      .uio_out(uio_out),
+      .uio_oe (uio_oe),
+      .ena    (ena),
+      .clk    (clk),
+      .rst_n  (rst_n)
   );
+
+  // Test sequence
+  initial begin
+
+    // Reset
+    #20;
+    rst_n = 1;
+
+    // Example stimulus
+    ui_in = 8'hAA;
+    #20;
+
+    ui_in = 8'h55;
+    #20;
+
+    ui_in = 8'hFF;
+    #20;
+
+    // End simulation
+    #100;
+    $finish;
+
+  end
 
 endmodule
