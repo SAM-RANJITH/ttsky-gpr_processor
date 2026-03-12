@@ -1,20 +1,36 @@
 ## How it works
 
-This project implements a simple General Purpose Register (GPR) processor using Verilog.
+This project implements a Ground Penetrating Radar (GPR) digital signal processor using Verilog for the Tiny Tapeout ASIC platform.
 
-The processor contains a small register file and control logic that allows data to be written to and read from registers based on control inputs. The design demonstrates basic digital processor concepts such as register storage, data movement, and synchronous operation.
+The design processes incoming radar echo samples and detects potential underground objects based on signal strength. The processor uses a simple digital signal processing pipeline consisting of:
 
-The module operates with a clock input and performs register operations on every clock edge. Inputs select the register address and control the read/write operation, while the processed data is available at the output pins.
+FIR filter to reduce noise in the incoming radar signal
 
-This design serves as a demonstration of a minimal processor-style register system implemented for the Tiny Tapeout ASIC platform.
+Envelope detector to extract the signal magnitude
+
+Peak detector to identify strong reflections that may indicate buried objects
+
+Radar samples are provided through the dedicated input pins. On every clock cycle, the processor filters the signal and evaluates whether the reflected signal exceeds a predefined threshold. If the threshold is exceeded, the system asserts an object detection flag on the output pins.
+
+This design demonstrates a simplified version of digital radar signal processing and shows how DSP concepts can be implemented in a small ASIC design suitable for the Tiny Tapeout platform.
 
 ## How to test
 
 1. Apply a clock signal to the design.
-2. Provide input data and register address through the input pins.
-3. Enable the write control signal to store data into a selected register.
-4. Disable the write signal and select the register address to read the stored data.
-5. Observe the output pins to verify that the correct data is retrieved from the register.
+
+Provide radar echo sample values through the ui_in[7:0] input pins.
+
+Enable the design by setting the enable (ena) signal high.
+
+The processor will filter the incoming samples and compute the signal envelope.
+
+When the processed signal exceeds the detection threshold, the object detection flag will be asserted on the output.
+
+Outputs:
+
+uo_out[7:1] – processed radar signal (envelope output)
+
+uo_out[0] – object detection indicator
 
 The functionality can also be verified through simulation using the provided Verilog testbench.
 
